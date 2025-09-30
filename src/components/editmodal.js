@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
   Modal,
@@ -10,14 +11,18 @@ import {
   Label,
   Input
 } from "reactstrap";
+import { updateTodoAction } from "../Redux/todoaction"; // import your redux action
 
-function Editmodal({ modal, toggle, todos, settodos, editId }) {
+function Editmodal({ modal, toggle, editId }) {
+  const todos = useSelector((state) => state.todos); // get todos from redux
+  const dispatch = useDispatch();
+
   const [updatedtodo, setupdatedtodo] = useState({
     title: "",
     description: ""
   });
 
-  // 👉 Prefill when modal opens
+  // Prefill form when modal opens
   useEffect(() => {
     if (editId) {
       const singletodo = todos.find((todo) => todo.id === editId);
@@ -30,23 +35,17 @@ function Editmodal({ modal, toggle, todos, settodos, editId }) {
     }
   }, [editId, todos]);
 
-  // 👉 Handle form submit
+  // Handle form submit
   const handlesubmit = (e) => {
     e.preventDefault();
+    
+    dispatch(updateTodoAction({
+      id: editId,
+      title: updatedtodo.title,
+  description: updatedtodo.description
+    }));
 
-    const updatedTodos = todos.map((todo) =>
-      todo.id === editId
-        ? {
-            ...todo,
-            title: updatedtodo.title,
-            description: updatedtodo.description,
-            updatedAt: new Date().toLocaleString()
-          }
-        : todo
-    );
-
-    settodos(updatedTodos);
-    toggle(); // close modal
+    toggle(); 
   };
 
   return (
@@ -100,5 +99,3 @@ function Editmodal({ modal, toggle, todos, settodos, editId }) {
 }
 
 export default Editmodal;
-
-

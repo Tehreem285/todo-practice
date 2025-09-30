@@ -1,4 +1,5 @@
 import { useState , useEffect } from "react";
+import { useSelector , useDispatch } from "react-redux";
 import {
   Navbar,
   NavbarBrand,
@@ -11,13 +12,16 @@ import {
   CardText,
   Button,
 } from "reactstrap";
+import { deleteTodoAction } from "../Redux/todoaction";
 import Inputmodal from "../components/inputmodal";
 import Editmodal from "../components/editmodal";
 import Viewmodal from "../components/viewmodal";
 
 function Todos() {
-  const [todos, settodos] = useState([]);
+  const todos = useSelector((state) => state.todos);
+  console.log(todos);
   const [id, setId] = useState();
+  const dispatch = useDispatch();
 
   const [inputmodal, setInputmodal] = useState(false);
   const inputtoggle = () => setInputmodal(!inputmodal);
@@ -28,21 +32,20 @@ function Todos() {
   const [editmodal, setEditmodal] = useState(false);
   const edittoggle = () => setEditmodal(!editmodal);
 
-  const deletetodo = (id) => {
-    const updatedtodos = todos.filter((todo) => todo.id !== id);
-    settodos(updatedtodos);
+  const handledelete = (id) => {
+    dispatch(deleteTodoAction(id))
   };
 
-   useEffect(() => {
-    const savedTodos = localStorage.getItem("todos");
-    if (savedTodos) {
-      settodos(JSON.parse(savedTodos));
-    }
-  }, []);
+  //  useEffect(() => {
+  //   const savedTodos = localStorage.getItem("todos");
+  //   if (savedTodos) {
+  //     settodos(JSON.parse(savedTodos));
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todos));
-  }, [todos]);
+  // useEffect(() => {
+  //   localStorage.setItem("todos", JSON.stringify(todos));
+  // }, [todos]);
 
   return (
     <div className="bg-light min-vh-100">
@@ -105,7 +108,7 @@ function Todos() {
                       className="mx-1"
                       color="danger"
                       size="sm"
-                      onClick={() => deletetodo(todo.id)}
+                      onClick={() => handledelete(todo.id)}
                     >
                       Delete
                     </Button>
@@ -129,20 +132,22 @@ function Todos() {
           </Row>
         </Container>
       </div>
-      <Inputmodal
-        modal={inputmodal}
-        toggle={inputtoggle}
-        todos={todos}
-        settodos={settodos}
-      />
-      <Viewmodal modal={viewmodal} toggle={viewtoggle} todos={todos} id={id} />
-      <Editmodal
-        modal={editmodal}
-        toggle={edittoggle}
-        todos={todos}
-        settodos={settodos}
-        editId={id}
-      />
+      <Inputmodal 
+  modal={inputmodal} 
+  toggle={inputtoggle} 
+/>
+
+<Viewmodal 
+  modal={viewmodal} 
+  toggle={viewtoggle} 
+  id={id} 
+/>
+
+<Editmodal
+  modal={editmodal} 
+  toggle={edittoggle} 
+  editId={id} 
+/>
     </div>
   );
 }

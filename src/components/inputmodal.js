@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   Button,
   Modal,
@@ -10,37 +11,29 @@ import {
   Label,
   Input
 } from "reactstrap";
+import { addTodoAction } from "../Redux/todoaction"; 
 
-function Inputmodal({modal , toggle , todos , settodos}) {
-  
+function Inputmodal({ modal, toggle }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const dispatch = useDispatch();
 
   const handlesubmit = (e) => {
     e.preventDefault();
 
-    const newtodo = {
-      id : Date.now(),
-      title , 
-      description,
-      createdAt : new Date().toLocaleString(),
-    };
-
-    settodos([...todos, newtodo]);
-    setTitle('');
-    setDescription('');
+    if (!title || !description) return; 
+    dispatch(addTodoAction(title, description));
+    setTitle("");
+    setDescription("");
     toggle();
-  }
+  };
 
   return (
     <div>
-     
-      {/* Modal */}
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>Add Todo</ModalHeader>
         <ModalBody>
           <Form>
-            {/* Title Field */}
             <FormGroup>
               <Label for="todoTitle">Title</Label>
               <Input
@@ -54,7 +47,6 @@ function Inputmodal({modal , toggle , todos , settodos}) {
               />
             </FormGroup>
 
-            {/* Description Field */}
             <FormGroup>
               <Label for="todoDescription">Description</Label>
               <Input

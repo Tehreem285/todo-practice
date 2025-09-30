@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import {
   Button,
   Modal,
@@ -11,7 +12,9 @@ import {
   CardText,
 } from "reactstrap";
 
-const Viewmodal = ({ modal, toggle, todos, id }) => {
+const Viewmodal = ({ modal, toggle, id }) => {
+
+    const todos = useSelector((state) => state.todos)
 
   const viewtodo = todos.find((todo) => todo.id === id);
 
